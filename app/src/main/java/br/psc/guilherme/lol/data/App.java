@@ -1,11 +1,13 @@
 package br.psc.guilherme.lol.data;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import br.psc.guilherme.lol.data.commands.FetchSummonerMatchData;
+import picocli.CommandLine;
 
+public class App {
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        FetchSummonerMatchData fetchSummonerMatchData = new FetchSummonerMatchData();
+        CommandLine commandLine = new CommandLine(fetchSummonerMatchData);
+        int exitCode = commandLine.execute(args);
+        System.exit(exitCode);
     }
 }

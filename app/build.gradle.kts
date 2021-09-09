@@ -7,6 +7,9 @@ repositories {
 }
 
 dependencies {
+    implementation("info.picocli:picocli:4.6.1")
+    annotationProcessor("info.picocli:picocli-codegen:4.6.1")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 }
 
@@ -16,4 +19,14 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes("Main-Class" to "br.psc.guilherme.lol.data.App")
+    }
+
+    from(configurations.compileClasspath.get().map {
+        if (it.isDirectory) it else zipTree(it)
+    })
 }
