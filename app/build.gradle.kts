@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     implementation("info.picocli:picocli:4.6.1")
+    implementation("com.squareup.okhttp:okhttp:2.7.5")
     implementation("org.springframework:spring-context:5.3.9")
 
     annotationProcessor("info.picocli:picocli-codegen:4.6.1")
