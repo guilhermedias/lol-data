@@ -1,12 +1,15 @@
 package br.psc.guilherme.lol.data;
 
-import br.psc.guilherme.lol.data.commands.FetchSummonerMatchData;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import picocli.CommandLine;
 
 public class App {
     public static void main(String[] args) {
-        FetchSummonerMatchData fetchSummonerMatchData = new FetchSummonerMatchData();
-        CommandLine commandLine = new CommandLine(fetchSummonerMatchData);
+        AnnotationConfigApplicationContext applicationContext =
+                new AnnotationConfigApplicationContext("br.psc.guilherme.lol.data");
+
+        CommandLine commandLine = applicationContext.getBean(CommandLine.class);
+
         int exitCode = commandLine.execute(args);
         System.exit(exitCode);
     }
