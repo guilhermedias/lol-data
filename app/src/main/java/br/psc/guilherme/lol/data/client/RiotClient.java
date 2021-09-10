@@ -25,12 +25,12 @@ public class RiotClient {
         this.platformBaseUrl = platformBaseUrl;
     }
 
-    public String getSummonerIdByName(String summonerName) {
+    public String getSummonerIdByName(String summonerName, String apiToken) {
         String url = buildSummonerByNameUrl(summonerName);
 
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader(API_TOKEN, "FAKE_TOKEN")
+                .addHeader(API_TOKEN, apiToken)
                 .get()
                 .build();
 
