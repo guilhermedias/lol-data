@@ -1,6 +1,7 @@
 package br.psc.guilherme.lol.data.commands;
 
 import br.psc.guilherme.lol.data.client.RiotClient;
+import br.psc.guilherme.lol.data.client.dto.matches.Match;
 import br.psc.guilherme.lol.data.output.OutputRecord;
 import br.psc.guilherme.lol.data.output.OutputWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,16 +70,27 @@ public class FetchSummonerMatchData implements Callable<Integer> {
         Collection<String> matchIds =
                 riotClient.getMatchIdsBySummonerId(summonerId, matchCount, apiToken);
 
-        List<OutputRecord> playerMatchRecords = matchIds.stream()
-                .map(matchId -> riotClient.getMatchById(matchId, apiToken))
+        Collection<Match> matches = getMatches(matchIds);
+
+        List<OutputRecord> playerMatchRecords = mapMatchesToOutputRecords(matches);
+
+        outputWriter.writeOutput(playerMatchRecords, outputFileName);
+
+        return SUCCESS_EXIT_CODE;
+    }
+
+    private List<OutputRecord> mapMatchesToOutputRecords(Collection<Match> matches) {
+        return matches.stream()
                 .flatMap(match ->
                         match.info().participants().stream()
                                 .filter(participant -> participant.summonerName().equals(summonerName))
                                 .map(participant -> new OutputRecord(match, participant)))
                 .collect(toList());
+    }
 
-        outputWriter.writeOutput(playerMatchRecords, outputFileName);
-
-        return SUCCESS_EXIT_CODE;
+    private List<Match> getMatches(Collection<String> matchIds) {
+        return matchIds.stream()
+                .map(matchId -> riotClient.getMatchById(matchId, apiToken))
+                .collect(toList());
     }
 }
