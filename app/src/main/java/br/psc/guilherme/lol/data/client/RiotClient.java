@@ -52,7 +52,7 @@ public class RiotClient {
             TypeReference<Summoner> responseType = new TypeReference<>() {
             };
             Summoner summoner = readResponse(response, responseType);
-            return summoner.getSummonerId();
+            return summoner.id();
         } catch (Exception exception) {
             throw new RuntimeException("Failed to retrieve summoner data.");
         }
