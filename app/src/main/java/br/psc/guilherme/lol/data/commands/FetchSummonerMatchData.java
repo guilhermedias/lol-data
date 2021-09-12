@@ -1,18 +1,14 @@
 package br.psc.guilherme.lol.data.commands;
 
 import br.psc.guilherme.lol.data.client.RiotClient;
-import br.psc.guilherme.lol.data.output.OutputMappingStrategy;
 import br.psc.guilherme.lol.data.output.OutputRecord;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import br.psc.guilherme.lol.data.output.OutputWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import java.io.FileWriter;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -28,6 +24,8 @@ public class FetchSummonerMatchData implements Callable<Integer> {
     private static final int SUCCESS_EXIT_CODE = 0;
 
     private final RiotClient riotClient;
+
+    private final OutputWriter outputWriter;
 
     @Parameters(
             index = "0",
@@ -59,8 +57,9 @@ public class FetchSummonerMatchData implements Callable<Integer> {
     private String outputFileName;
 
     @Autowired
-    public FetchSummonerMatchData(RiotClient riotClient) {
+    public FetchSummonerMatchData(RiotClient riotClient, OutputWriter outputWriter) {
         this.riotClient = riotClient;
+        this.outputWriter = outputWriter;
     }
 
     @Override
@@ -78,19 +77,7 @@ public class FetchSummonerMatchData implements Callable<Integer> {
                                 .map(participant -> new OutputRecord(match, participant)))
                 .collect(toList());
 
-        try (Writer fileWriter = new FileWriter(outputFileName)) {
-            OutputMappingStrategy<OutputRecord> mappingStrategy = new OutputMappingStrategy<>();
-            mappingStrategy.setType(OutputRecord.class);
-
-            StatefulBeanToCsv<OutputRecord> beanToCsv =
-                    new StatefulBeanToCsvBuilder<OutputRecord>(fileWriter)
-                            .withMappingStrategy(mappingStrategy)
-                            .build();
-
-            beanToCsv.write(playerMatchRecords);
-        } catch (Exception exception) {
-            throw new RuntimeException("Failed to create the output file.", exception);
-        }
+        outputWriter.writeOutput(playerMatchRecords, outputFileName);
 
         return SUCCESS_EXIT_CODE;
     }
