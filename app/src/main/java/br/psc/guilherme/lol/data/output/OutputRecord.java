@@ -2,69 +2,115 @@ package br.psc.guilherme.lol.data.output;
 
 import br.psc.guilherme.lol.data.client.dto.matches.Match;
 import br.psc.guilherme.lol.data.client.dto.matches.Participant;
+import com.opencsv.bean.CsvBindByName;
 
-@SuppressWarnings("FieldCanBeLocal")
 public class OutputRecord {
+    @CsvBindByName(column = "match.id")
     private final String matchId;
+    @CsvBindByName(column = "game.duration")
     private final Integer gameDuration;
 
+    @CsvBindByName(column = "summoner.name")
     private final String summonerName;
+    @CsvBindByName(column = "champion.name")
     private final String championName;
 
+    @CsvBindByName(column = "team.position")
     private final String teamPosition;
+    @CsvBindByName(column = "individual.position")
     private final String individualPosition;
+    @CsvBindByName(column = "role")
     private final String role;
+    @CsvBindByName(column = "lane")
     private final String lane;
 
+    @CsvBindByName(column = "kills")
     private final Integer kills;
+    @CsvBindByName(column = "deaths")
     private final Integer deaths;
+    @CsvBindByName(column = "assists")
     private final Integer assists;
 
+    @CsvBindByName(column = "largest.multi.kill")
     private final Integer largestMultiKill;
+    @CsvBindByName(column = "double.kills")
     private final Integer doubleKills;
+    @CsvBindByName(column = "triple.kills")
     private final Integer tripleKills;
+    @CsvBindByName(column = "quadra.kills")
     private final Integer quadraKills;
+    @CsvBindByName(column = "penta.kills")
     private final Integer pentaKills;
 
+    @CsvBindByName(column = "killing.sprees")
     private final Integer killingSprees;
+    @CsvBindByName(column = "largest.killing.spree")
     private final Integer largestKillingSpree;
 
+    @CsvBindByName(column = "first.blood.kill")
     private final Boolean firstBloodKill;
+    @CsvBindByName(column = "first.blood.assist")
     private final Boolean firstBloodAssist;
 
+    @CsvBindByName(column = "first.tower.kill")
     private final Boolean firstTowerKill;
+    @CsvBindByName(column = "first.tower.assist")
     private final Boolean firstTowerAssist;
 
+    @CsvBindByName(column = "total.minions.killed")
     private final Integer totalMinionsKilled;
+    @CsvBindByName(column = "neutral.minions.killed")
     private final Integer neutralMinionsKilled;
 
+    @CsvBindByName(column = "physical.damage.dealt")
     private final Integer physicalDamageDealt;
+    @CsvBindByName(column = "magic.damage.dealt")
     private final Integer magicDamageDealt;
+    @CsvBindByName(column = "true.damage.dealt")
     private final Integer trueDamageDealt;
+    @CsvBindByName(column = "total.damage.dealt")
     private final Integer totalDamageDealt;
 
+    @CsvBindByName(column = "physical.damage.dealt.to.champions")
     private final Integer physicalDamageDealtToChampions;
+    @CsvBindByName(column = "magic.damage.dealt.to.champions")
     private final Integer magicDamageDealtToChampions;
+    @CsvBindByName(column = "true.damage.dealt.to.champions")
     private final Integer trueDamageDealtToChampions;
+    @CsvBindByName(column = "total.damage.dealt.to.champions")
     private final Integer totalDamageDealtToChampions;
 
+    @CsvBindByName(column = "damage.dealt.to.objectives")
     private final Integer damageDealtToObjectives;
+    @CsvBindByName(column = "damage.dealt.to.buildings")
     private final Integer damageDealtToBuildings;
+    @CsvBindByName(column = "damage.dealt.to.turrets")
     private final Integer damageDealtToTurrets;
 
+    @CsvBindByName(column = "physical.damage.taken")
     private final Integer physicalDamageTaken;
+    @CsvBindByName(column = "magic.damage.taken")
     private final Integer magicDamageTaken;
+    @CsvBindByName(column = "true.damage.taken")
     private final Integer trueDamageTaken;
+    @CsvBindByName(column = "total.damage.taken")
     private final Integer totalDamageTaken;
 
+    @CsvBindByName(column = "wards.placed")
     private final Integer wardsPlaced;
+    @CsvBindByName(column = "wards.killed")
     private final Integer wardsKilled;
+    @CsvBindByName(column = "control.wards.bought")
     private final Integer visionWardsBoughtInGame;
+    @CsvBindByName(column = "control.wards.placed")
     private final Integer detectorWardsPlaced;
+    @CsvBindByName(column = "vision.score")
     private final Integer visionScore;
 
+    @CsvBindByName(column = "gold.earned")
     private final Integer goldEarned;
 
+    @CsvBindByName(column = "win")
     private final Boolean win;
 
     public OutputRecord(Match match, Participant participant) {

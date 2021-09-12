@@ -1,6 +1,7 @@
 package br.psc.guilherme.lol.data.commands;
 
 import br.psc.guilherme.lol.data.client.RiotClient;
+import br.psc.guilherme.lol.data.output.OutputMappingStrategy;
 import br.psc.guilherme.lol.data.output.OutputRecord;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -78,13 +79,17 @@ public class FetchSummonerMatchData implements Callable<Integer> {
                 .collect(toList());
 
         try (Writer fileWriter = new FileWriter(outputFileName)) {
+            OutputMappingStrategy<OutputRecord> mappingStrategy = new OutputMappingStrategy<>();
+            mappingStrategy.setType(OutputRecord.class);
+
             StatefulBeanToCsv<OutputRecord> beanToCsv =
                     new StatefulBeanToCsvBuilder<OutputRecord>(fileWriter)
+                            .withMappingStrategy(mappingStrategy)
                             .build();
 
             beanToCsv.write(playerMatchRecords);
         } catch (Exception exception) {
-            throw new RuntimeException("Failed to create the output file.");
+            throw new RuntimeException("Failed to create the output file.", exception);
         }
 
         return SUCCESS_EXIT_CODE;
