@@ -90,7 +90,20 @@ public class FetchSummonerMatchData implements Callable<Integer> {
 
     private List<Match> getMatches(Collection<String> matchIds) {
         return matchIds.stream()
-                .map(matchId -> riotClient.getMatchById(matchId, apiToken))
+                .map(matchId -> {
+                    respectTheApiRateLimit();
+
+                    System.out.printf("Fetching data from match %s%n", matchId);
+                    return riotClient.getMatchById(matchId, apiToken);
+                })
                 .collect(toList());
+    }
+
+    private void respectTheApiRateLimit() {
+        try {
+            Thread.sleep(1200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Process interrupted.");
+        }
     }
 }
