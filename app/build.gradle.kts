@@ -12,6 +12,7 @@ dependencies {
 
     implementation("com.squareup.okhttp:okhttp:2.7.5")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.5")
+    implementation("com.opencsv:opencsv:5.5.2")
 
     annotationProcessor("info.picocli:picocli-codegen:4.6.1")
 

@@ -130,8 +130,4 @@ public class OutputRecord {
 
         this.win = participant.win();
     }
-
-    public Integer getTotalDamageDealtToChampions() {
-        return this.totalDamageDealtToChampions;
-    }
 }
