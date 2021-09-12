@@ -1,6 +1,8 @@
 package br.psc.guilherme.lol.data.commands;
 
 import br.psc.guilherme.lol.data.client.RiotClient;
+import br.psc.guilherme.lol.data.client.dto.matches.Match;
+import br.psc.guilherme.lol.data.client.dto.matches.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -53,7 +55,21 @@ public class FetchSummonerMatchData implements Callable<Integer> {
         Collection<String> matchIds =
                 riotClient.getMatchIdsBySummonerId(summonerId, matchCount, apiToken);
 
-        System.out.println(matchIds);
+        String firstMatchId = matchIds
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Failed to retrieve match IDs."));
+
+        Match match = riotClient.getMatchById(firstMatchId, apiToken);
+
+        Integer detectorWards = match.info().participants()
+                .stream()
+                .filter(participant -> participant.summonerName().equals("Gadias"))
+                .map(Participant::totalDamageDealtToChampions)
+                .findFirst()
+                .orElse(-1);
+
+        System.out.println(detectorWards);
 
         return SUCCESS_EXIT_CODE;
     }

@@ -1,6 +1,7 @@
 package br.psc.guilherme.lol.data.client;
 
-import br.psc.guilherme.lol.data.client.dto.Summoner;
+import br.psc.guilherme.lol.data.client.dto.matches.Match;
+import br.psc.guilherme.lol.data.client.dto.summoner.Summoner;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.OkHttpClient;
@@ -19,6 +20,7 @@ import static java.lang.String.format;
 public class RiotClient {
     private static final String GET_SUMMONER_BY_NAME = "/lol/summoner/v4/summoners/by-name/%s";
     private static final String GET_MATCH_IDS_BY_SUMMONER_ID = "/lol/match/v5/matches/by-puuid/%s/ids?count=%d";
+    private static final String GET_MATCH_BY_ID = "/lol/match/v5/matches/%s";
     private static final String API_TOKEN = "X-Riot-Token";
 
     private final OkHttpClient httpClient;
@@ -77,6 +79,25 @@ public class RiotClient {
         }
     }
 
+    public Match getMatchById(String matchId, String apiToken) {
+        String url = buildMatchByIdUrl(matchId);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader(API_TOKEN, apiToken)
+                .get()
+                .build();
+
+        try {
+            Response response = httpClient.newCall(request).execute();
+            TypeReference<Match> responseType = new TypeReference<>() {
+            };
+            return readResponse(response, responseType);
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to retrieve match.");
+        }
+    }
+
     private String buildSummonerByNameUrl(String summonerName) {
         String path = format(GET_SUMMONER_BY_NAME, summonerName);
         return platformBaseUrl + path;
@@ -84,6 +105,11 @@ public class RiotClient {
 
     private String buildMatchIdsBySummonerIdUrl(String summonerId, int matchCount) {
         String path = format(GET_MATCH_IDS_BY_SUMMONER_ID, summonerId, matchCount);
+        return regionBaseUrl + path;
+    }
+
+    private String buildMatchByIdUrl(String matchId) {
+        String path = format(GET_MATCH_BY_ID, matchId);
         return regionBaseUrl + path;
     }
 
