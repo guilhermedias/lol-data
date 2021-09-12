@@ -1,8 +1,7 @@
 package br.psc.guilherme.lol.data.commands;
 
 import br.psc.guilherme.lol.data.client.RiotClient;
-import br.psc.guilherme.lol.data.client.dto.matches.Match;
-import br.psc.guilherme.lol.data.client.dto.matches.Participant;
+import br.psc.guilherme.lol.data.output.OutputRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -12,6 +11,7 @@ import picocli.CommandLine.Parameters;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
+import static java.util.stream.Collectors.toList;
 import static picocli.CommandLine.Help.Visibility.ALWAYS;
 
 @Component
@@ -55,21 +55,16 @@ public class FetchSummonerMatchData implements Callable<Integer> {
         Collection<String> matchIds =
                 riotClient.getMatchIdsBySummonerId(summonerId, matchCount, apiToken);
 
-        String firstMatchId = matchIds
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve match IDs."));
+        Collection<OutputRecord> playerMatchRecords = matchIds.stream()
+                .map(matchId -> riotClient.getMatchById(matchId, apiToken))
+                .flatMap(match ->
+                        match.info().participants().stream()
+                                .filter(participant -> participant.summonerName().equals(summonerName))
+                                .map(participant -> new OutputRecord(match, participant)))
+                .collect(toList());
 
-        Match match = riotClient.getMatchById(firstMatchId, apiToken);
-
-        Integer detectorWards = match.info().participants()
-                .stream()
-                .filter(participant -> participant.summonerName().equals("Gadias"))
-                .map(Participant::totalDamageDealtToChampions)
-                .findFirst()
-                .orElse(-1);
-
-        System.out.println(detectorWards);
+        playerMatchRecords.forEach(matchRecord ->
+                System.out.println(matchRecord.getTotalDamageDealtToChampions()));
 
         return SUCCESS_EXIT_CODE;
     }
